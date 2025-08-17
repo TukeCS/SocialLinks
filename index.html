@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuke's Shark Terminal</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+<style>
+  /* General Styles */
+  body {
+    margin: 0;
+    font-family: 'Fira Code', monospace;
+    background: #000814; /* deep black-blue */
+    color: #33ccff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
+  /* Terminal box */
+  .terminal {
+    position: relative;
+    z-index: 1;
+    background: rgba(0,0,32,0.85); /* dark blue glass effect */
+    padding: 20px 30px;
+    border-radius: 12px;
+    text-align: left;
+    min-width: 280px;
+    max-width: 90%;
+    box-shadow: 0 0 30px rgba(0,255,255,0.3);
+    word-wrap: break-word;
+  }
+
+  .prompt {
+    display: inline-block;
+  }
+
+  .blink {
+    display: inline-block;
+    width: 10px;
+    background: #33ccff;
+    margin-left: 2px;
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50%, 100% { background: #33ccff; }
+    25%, 75% { background: transparent; }
+  }
+
+  /* Command links */
+  a.command {
+    display: block;
+    color: #00ffff;
+    text-decoration: none;
+    margin: 8px 0;
+    transition: transform 0.1s ease, color 0.1s ease;
+    font-weight: normal;
+  }
+
+  a.command:hover {
+    transform: translateX(6px);
+    text-decoration: underline;
+    color: #33ccff;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 15px;
+    font-size: 0.8em;
+    color: #88ccee;
+    font-style: italic;
+  }
+
+  /* Responsive font for mobile */
+  @media (max-width: 480px) {
+    .terminal {
+      padding: 15px 20px;
+    }
+    .blink {
+      width: 6px;
+    }
+    .footer {
+      font-size: 0.7em;
+    }
+  }
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+
+<div class="terminal">
+  <div class="prompt">🦈 tuke@sharknet:~$ <span class="blink"></span></div>
+  <div class="links">
+    <a class="command" href="https://www.tiktok.com/@tukecs" target="_blank">$ tiktok 🦈</a>
+    <a class="command" href="https://www.youtube.com/@TukeShark" target="_blank">$ youtube 🦈</a>
+    <a class="command" href="https://www.instagram.com/tuke.gg/" target="_blank">$ instagram 🦈</a>
+  </div>
+  <div class="footer">[Arch Linux ❤️] ~ Tuke</div>
+</div>
+
+<script>
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789><';
+const fontSize = 18;
+let columns = canvas.width / fontSize;
+let drops = Array(Math.floor(columns)).fill(1);
+
+function draw() {
+  ctx.fillStyle = 'rgba(0,0,32,0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#33ccff';
+  ctx.font = fontSize + 'px Fira Code';
+  
+  for (let i = 0; i < drops.length; i++) {
+    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    drops[i]++;
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+  }
+}
+
+setInterval(draw, 50);
+</script>
+</body>
+</html>
